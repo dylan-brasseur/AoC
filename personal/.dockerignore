@@ -1,0 +1,5 @@
+inputs
+Dockerfile
+README.md
+.dockerignore
+.gitignore
