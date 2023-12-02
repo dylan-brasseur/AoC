@@ -5,3 +5,12 @@ members = [
     "aoc_common",
     "day_01",
 ]
+
+[package]
+name = "aoc_impl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aoc_common = { path = "aoc_common" }
+day_01 = { path = "day_01" }
