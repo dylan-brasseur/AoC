@@ -1,7 +1,9 @@
+#[allow(unused_variables)]
 pub fn solve_1(input: &str) -> String {
     todo!()
 }
 
+#[allow(unused_variables)]
 pub fn solve_2(input: &str) -> String {
     todo!()
 }
