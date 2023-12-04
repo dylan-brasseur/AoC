@@ -1,8 +1,6 @@
-use nom::bytes::complete::tag;
-use nom::multi::separated_list0;
-
 pub fn solve_1(input: &str) -> String {
-    format!("{}", input.split("\n").map(|line| line.split(":").last().unwrap_or("")).)
+    //format!("{}", input.split("\n").map(|line| line.split(":").last().unwrap_or("")).)
+    todo!()
 }
 
 pub fn solve_2(input: &str) -> String {
@@ -12,7 +10,7 @@ pub fn solve_2(input: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    (([0-9]*).(blue|red|green),?)
+    //(([0-9]*).(blue|red|green),?)
     const TEST_INPUT_1: &str =
         r"Game 1: 3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green
 Game 2: 1 blue, 2 green; 3 green, 4 blue, 1 red; 1 green, 1 blue

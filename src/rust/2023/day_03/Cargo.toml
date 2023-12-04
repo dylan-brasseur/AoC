@@ -9,3 +9,6 @@ edition = "2021"
 aoc_common = { path = "../aoc_common" }
 nom = "7.1.3"
 regex = "1.10.2"
+
+[dev-dependencies]
+test-case = "*"

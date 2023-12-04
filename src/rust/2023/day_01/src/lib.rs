@@ -47,12 +47,12 @@ zoneight234
 7pqrstsixteen";
 
     #[test]
-    fn solves_1() {
+    fn solves_example_1() {
         assert_eq!(solve_1(TEST_INPUT_1), "142")
     }
 
     #[test]
-    fn solves_2() {
+    fn solves_example_2() {
         assert_eq!(solve_2(TEST_INPUT_2), "281")
     }
 }
