@@ -2,8 +2,10 @@ use std::env;
 use aoc_common::{account_type_from_string, get_input, USAGE};
 
 
-const DAYS: [[fn(&str) -> String; 2]; 1] = [
-[day_01::solve_1, day_01::solve_2]
+const DAYS: [[fn(&str) -> String; 2]; 3] = [
+[day_01::solve_1, day_01::solve_2],
+[day_02::solve_1, day_02::solve_2],
+[day_03::solve_1, day_03::solve_2]
 ];
 fn main() {
     let args: Vec<String> = env::args().collect();

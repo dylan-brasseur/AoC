@@ -35,4 +35,4 @@
 **/cmake-build*
 
 **/target/**
-.idea/**
+**/.idea/**
