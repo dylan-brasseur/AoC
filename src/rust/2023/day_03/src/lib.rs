@@ -2,8 +2,6 @@ use std::collections::{HashMap, HashSet};
 
 use regex::Regex;
 
-use aoc_common::utils::map_to_lines;
-
 struct PuzzleInput {
     symbols: HashMap<(i32, i32), char>,
     parts: HashMap<(i32, i32), (u32, u32)>,
@@ -13,7 +11,7 @@ fn parse_input(input: &str) -> PuzzleInput {
     let mut puzzle: PuzzleInput = PuzzleInput { symbols: Default::default(), parts: Default::default() };
     let re = Regex::new(r"(?<symbol>[^[0-9].]+)|(?<part>[0-9]+)").unwrap();
     let mut part_id: u32 = 0;
-    for (i, l) in map_to_lines(input).enumerate() {
+    for (i, l) in input.lines().enumerate() {
         for c in re.captures_iter(l) {
             match c.name("symbol") {
                 None => {}

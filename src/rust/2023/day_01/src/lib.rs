@@ -1,7 +1,5 @@
 use regex::{Captures, Regex};
 
-use aoc_common::utils::map_to_lines;
-
 const DIGITS: [&str; 9] = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
 
 fn match_to_digits(line: Option<Captures>) -> u32 {
@@ -13,7 +11,7 @@ fn match_to_digits(line: Option<Captures>) -> u32 {
 }
 
 fn solve(input: &str, first: Regex, last: Regex) -> String {
-    format!("{}", map_to_lines(input).map(|line| 10 * match_to_digits(first.captures(line)) + match_to_digits(last.captures(line))).sum::<u32>())
+    format!("{}", input.lines().map(|line| 10 * match_to_digits(first.captures(line)) + match_to_digits(last.captures(line))).sum::<u32>())
 }
 
 pub fn solve_1(input: &str) -> String {

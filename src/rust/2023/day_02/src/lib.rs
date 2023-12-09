@@ -3,12 +3,11 @@ use std::collections::HashMap;
 
 use regex::Regex;
 
-use aoc_common::utils::map_to_lines;
 
 pub fn solve_1(input: &str) -> String {
     let max_values: HashMap<&str, u32> = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);
     let re = Regex::new("([0-9]*).(blue|red|green)").unwrap();
-    let games = map_to_lines(input).map(|line| line.split(":").last().unwrap_or(""));
+    let games = input.lines().map(|line| line.split(":").last().unwrap_or(""));
     let mut total = 0;
     for (i, g) in games.enumerate() {
         let draws = g.split(";");
@@ -27,7 +26,7 @@ pub fn solve_1(input: &str) -> String {
 
 pub fn solve_2(input: &str) -> String {
     let re = Regex::new("([0-9]*).(blue|red|green)").unwrap();
-    let games = map_to_lines(input).map(|line| line.split(":").last().unwrap_or(""));
+    let games = input.lines().map(|line| line.split(":").last().unwrap_or(""));
     let indices: HashMap<&str, usize> = HashMap::from([("red", 0), ("green", 1), ("blue", 2)]);
     let mut total = 0;
     for g in games {

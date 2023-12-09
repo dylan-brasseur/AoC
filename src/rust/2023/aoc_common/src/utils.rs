@@ -1,14 +1,3 @@
-use std::iter::FilterMap;
-use std::str::Split;
-
-pub fn map_to_lines<'a>(input: &'a str) -> FilterMap<Split<'a, &'static str>, fn(&'a str) -> Option<&'a str>> {
-    input.split("\n").filter_map(|s| s.len().gt(&(0usize)).then(|| s))
-}
-
-pub fn split_by_multispace(input: &str) -> Vec<&str> {
-    input.split_whitespace().collect()
-}
-
 pub fn get_roots(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
     if a == 0.0 {
         if b == 0.0 {
