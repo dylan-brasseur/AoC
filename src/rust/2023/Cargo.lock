@@ -63,7 +63,6 @@ name = "day_01"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -72,8 +71,6 @@ name = "day_02"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
- "phf",
  "regex",
  "test-case",
 ]
@@ -83,7 +80,6 @@ name = "day_03"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
  "test-case",
 ]
@@ -93,7 +89,6 @@ name = "day_04"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -102,7 +97,6 @@ name = "day_05"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -111,7 +105,6 @@ name = "day_06"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -120,7 +113,6 @@ name = "day_07"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -138,7 +130,6 @@ name = "day_09"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -147,7 +138,6 @@ name = "day_10"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -156,7 +146,6 @@ name = "day_11"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -165,7 +154,6 @@ name = "day_12"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -174,7 +162,6 @@ name = "day_13"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -183,7 +170,6 @@ name = "day_14"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -192,7 +178,6 @@ name = "day_15"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -201,7 +186,6 @@ name = "day_16"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -210,7 +194,6 @@ name = "day_17"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -219,7 +202,6 @@ name = "day_18"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -228,7 +210,6 @@ name = "day_19"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -237,7 +218,6 @@ name = "day_20"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -246,7 +226,6 @@ name = "day_21"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -255,7 +234,6 @@ name = "day_22"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -264,7 +242,6 @@ name = "day_23"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -273,7 +250,6 @@ name = "day_24"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -282,7 +258,6 @@ name = "day_25"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
- "nom",
  "regex",
 ]
 
@@ -306,24 +281,6 @@ checksum = "d273983c5a657a70a3e8f2a01329822f3b8c8172b73826411a55751e404a0a4a"
 dependencies = [
  "memchr",
  "minimal-lexical",
-]
-
-[[package]]
-name = "phf"
-version = "0.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ade2d8b8f33c7333b51bcf0428d37e217e9f32192ae4772156f65063b8ce03dc"
-dependencies = [
- "phf_shared",
-]
-
-[[package]]
-name = "phf_shared"
-version = "0.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "90fcb95eef784c2ac79119d1dd819e162b5da872ce6f3c3abe1e8ca1c082f72b"
-dependencies = [
- "siphasher",
 ]
 
 [[package]]
@@ -372,12 +329,6 @@ name = "regex-syntax"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
-
-[[package]]
-name = "siphasher"
-version = "0.3.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38b58827f4464d87d377d175e90bf58eb00fd8716ff0a62f80356b5e61555d0d"
 
 [[package]]
 name = "syn"

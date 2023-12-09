@@ -1,6 +1,6 @@
 use std::env;
-use aoc_common::{account_type_from_string, get_input, USAGE};
 
+use aoc_common::{account_type_from_string, get_input, USAGE};
 
 const DAYS: [[fn(&str) -> String; 2]; 25] = [
     [day_01::solve_1, day_01::solve_2],
@@ -50,6 +50,7 @@ fn main() {
 #[cfg(test)]
 mod tests {
     use test_case::test_matrix;
+
     use super::*;
 
     #[test_matrix(["google"], [2023], ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"], [1, 2])]
