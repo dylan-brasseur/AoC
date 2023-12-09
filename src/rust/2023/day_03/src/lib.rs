@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use regex::Regex;
 
-use aoc_common::map_to_lines;
+use aoc_common::utils::map_to_lines;
 
 struct PuzzleInput {
     symbols: HashMap<(i32, i32), char>,

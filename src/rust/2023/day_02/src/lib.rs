@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use regex::Regex;
 
-use aoc_common::map_to_lines;
+use aoc_common::utils::map_to_lines;
 
 pub fn solve_1(input: &str) -> String {
     let max_values: HashMap<&str, u32> = HashMap::from([("red", 12), ("green", 13), ("blue", 14)]);

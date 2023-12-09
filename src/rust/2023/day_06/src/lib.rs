@@ -1,10 +1,10 @@
 use std::iter::zip;
 
-use aoc_common::{get_roots, map_to_lines, split_by_multispace};
+use aoc_common::utils::{get_roots, map_to_lines};
 
 #[allow(unused_variables)]
 pub fn solve_1(input: &str) -> String {
-    let values = map_to_lines(input).map(|s| s.split(":").last().unwrap_or("")).map(|s| split_by_multispace(s).iter().map(|s| s.parse::<u64>().unwrap_or(0)).collect()).collect::<Vec<Vec<u64>>>();
+    let values = map_to_lines(input).map(|s| s.split(":").last().unwrap_or("")).map(|s| s.split_whitespace().map(|s| s.parse::<u64>().unwrap_or(0)).collect()).collect::<Vec<Vec<u64>>>();
     let ms_mm = zip(values.get(0).unwrap(), values.get(1).unwrap());
     let vals = ms_mm.into_iter().map(|(ms, mm)| get_roots(-1.0, *ms as f64, -(*mm as f64)).unwrap()).map(|(r1, r2)| {
         let range = (f64::floor(r2) - f64::ceil(r1)) as u64;
