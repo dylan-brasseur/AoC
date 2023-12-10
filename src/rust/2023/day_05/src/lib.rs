@@ -1,11 +1,75 @@
+use aoc_common::math_utils::{Interval, IntervalBehavior, IntervalRange};
+use aoc_common::string_utils::StringManipulation;
+
 #[allow(unused_variables)]
 pub fn solve_1(input: &str) -> String {
-    todo!()
+    let mut lines = input.lines().skip_while(|s| s.is_empty());
+    let mut seeds: Interval = lines.next().unwrap().right_of(":").extract_numbers().map(|s| IntervalRange::new(s, s + 1)).collect::<Vec<IntervalRange>>().into();
+    let mut maps: Vec<Vec<(IntervalRange, i64)>> = Vec::new();
+    for l in lines {
+        if l.is_empty() {
+            continue;
+        }
+        if l.contains(':') {
+            maps.push(Vec::new());
+            continue;
+        }
+        let nums: [i64; 3] = l.extract_numbers().collect::<Vec<i64>>().try_into().unwrap();
+        maps.last_mut().unwrap().push((IntervalRange::new(nums[1], nums[1] + nums[2]), nums[0] - nums[1]));
+    }
+    //println!("Seeds : {:?}", seeds);
+    for m in &mut maps {
+        m.sort_by(|(a, _), (b, _)| a.start.cmp(&b.start));
+        //println!("Map : {:?}", m);
+    }
+
+    for m in &maps {
+        seeds = seeds.map_to(m);
+        //println!("Next : {:?}", &seeds);
+    }
+
+    format!("{}", seeds.hull().start)
 }
 
 #[allow(unused_variables)]
 pub fn solve_2(input: &str) -> String {
-    todo!()
+    let mut lines = input.lines();
+    let seeds_line = lines.next().unwrap().right_of(":").extract_numbers().collect::<Vec<i64>>();
+    let mut start = 0;
+    let mut seeds: Vec<IntervalRange> = Vec::new();
+    for (i, l) in seeds_line.iter().enumerate() {
+        if i % 2 == 1 {
+            seeds.push(IntervalRange::new(start, start + *l));
+            start = 0;
+        } else {
+            start = *l;
+        }
+    }
+    let mut seeds: Interval = seeds.into();
+    let mut maps: Vec<Vec<(IntervalRange, i64)>> = Vec::new();
+    for l in lines {
+        if l.is_empty() {
+            continue;
+        }
+        if l.contains(':') {
+            maps.push(Vec::new());
+            continue;
+        }
+        let nums: [i64; 3] = l.extract_numbers().collect::<Vec<i64>>().try_into().unwrap();
+        maps.last_mut().unwrap().push((IntervalRange::new(nums[1], nums[1] + nums[2]), nums[0] - nums[1]));
+    }
+    //println!("Seeds : {:?}", seeds);
+    for m in &mut maps {
+        m.sort_by(|(a, _), (b, _)| a.start.cmp(&b.start));
+        //println!("Map : {:?}", m);
+    }
+
+    for m in &maps {
+        seeds = seeds.map_to(m);
+        //println!("Next : {:?}", &seeds);
+    }
+
+    format!("{}", seeds.hull().start)
 }
 
 #[cfg(test)]
@@ -46,7 +110,7 @@ humidity-to-location map:
 60 56 37
 56 93 4";
 
-    const TEST_INPUT_2: &str = r"";
+    const TEST_INPUT_2: &str = TEST_INPUT_1;
 
     #[test]
     fn solves_1() {
@@ -55,6 +119,6 @@ humidity-to-location map:
 
     #[test]
     fn solves_2() {
-        assert_eq!(solve_2(TEST_INPUT_2), "")
+        assert_eq!(solve_2(TEST_INPUT_2), "46")
     }
 }

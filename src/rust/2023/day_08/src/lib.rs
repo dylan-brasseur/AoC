@@ -1,11 +1,9 @@
-#[allow(unused_variables)]
 pub fn solve_1(input: &str) -> String {
-    todo!()
+    todo!("{}", input)
 }
 
-#[allow(unused_variables)]
 pub fn solve_2(input: &str) -> String {
-    todo!()
+    todo!("{}", input)
 }
 
 #[cfg(test)]
@@ -14,7 +12,7 @@ mod tests {
 
     const TEST_INPUT_1: &str = r"";
 
-    const TEST_INPUT_2: &str = r"";
+    const TEST_INPUT_2: &str = TEST_INPUT_1;
 
     #[test]
     fn solves_1() {

@@ -1,11 +1,11 @@
-#[allow(unused_variables)]
+use aoc_common::aoc_utils::not_yet;
+
 pub fn solve_1(input: &str) -> String {
-    todo!()
+    not_yet(input)
 }
 
-#[allow(unused_variables)]
 pub fn solve_2(input: &str) -> String {
-    todo!()
+    not_yet(input)
 }
 
 #[cfg(test)]
@@ -14,7 +14,7 @@ mod tests {
 
     const TEST_INPUT_1: &str = r"";
 
-    const TEST_INPUT_2: &str = r"";
+    const TEST_INPUT_2: &str = TEST_INPUT_1;
 
     #[test]
     fn solves_1() {

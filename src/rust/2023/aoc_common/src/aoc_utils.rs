@@ -51,3 +51,8 @@ pub fn get_input(account_type: &AccountType, year: &i16, day: &i8) -> std::io::R
     let path = Path::new(&get_aoc_root()).join("personal").join("inputs").join(account_type.to_string()).join(year.to_string()).join(format!("{:02}", day)).join("input.txt");
     fs::read_to_string(path)
 }
+
+pub fn not_yet(input: &str) -> String {
+    let _ = input;
+    todo!()
+}

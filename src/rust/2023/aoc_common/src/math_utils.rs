@@ -29,10 +29,11 @@ pub fn get_roots(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
 #[derive(PartialEq)]
 #[derive(Debug)]
 pub struct IntervalRange {
-    start: i64,
+    pub start: i64,
     end: i64,
 }
 
+#[derive(Debug)]
 pub struct Interval {
     ranges: Vec<IntervalRange>,
 }
@@ -42,6 +43,44 @@ pub struct Interval {
 pub enum IntervalOperationResult<T> {
     Single(T),
     Multiple(Vec<T>),
+}
+
+impl Display for IntervalOperationResult<IntervalRange> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Single(x) => { write!(f, "{}", x) }
+            Multiple(x) => {
+                write!(f, "[")?;
+                for (i, r) in x.iter().enumerate() {
+                    if i > 0 {
+                        write!(f, ", {}", r)?;
+                    } else {
+                        write!(f, "{}", r)?;
+                    }
+                }
+                write!(f, "]")
+            }
+        }
+    }
+}
+
+impl Display for IntervalOperationResult<Interval> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Single(x) => { write!(f, "{}", x) }
+            Multiple(x) => {
+                write!(f, "[")?;
+                for (i, r) in x.iter().enumerate() {
+                    if i > 0 {
+                        write!(f, ", {}", r)?;
+                    } else {
+                        write!(f, "{}", r)?;
+                    }
+                }
+                write!(f, "]")
+            }
+        }
+    }
 }
 
 pub trait IntervalBehavior {
@@ -56,6 +95,10 @@ pub trait IntervalBehavior {
     fn is_empty(&self) -> bool;
 
     fn collapse(&mut self);
+
+    fn shift(&self, amount: i64) -> Self;
+
+    fn difference(&self, other: &Self) -> IntervalOperationResult<Self> where Self: Sized;
 }
 
 impl IntervalBehavior for Interval {
@@ -74,15 +117,20 @@ impl IntervalBehavior for Interval {
     }
 
     fn intersect(&self, b: &Self) -> Self {
-        todo!()
+        self.ranges.iter().flat_map(|i| b.ranges.iter().map(|j| i.intersect(j))).collect::<Vec<IntervalRange>>().into()
     }
 
     fn contains(&self, val: i64) -> bool {
-        todo!()
+        for i in &self.ranges {
+            if i.contains(val) {
+                return true;
+            }
+        }
+        false
     }
 
     fn is_empty(&self) -> bool {
-        todo!()
+        self.ranges.iter().all(|i| i.is_empty())
     }
 
     fn collapse(&mut self) {
@@ -107,6 +155,37 @@ impl IntervalBehavior for Interval {
         }
         self.ranges = final_vec;
     }
+
+    fn shift(&self, amount: i64) -> Self {
+        self.ranges.iter().map(|i| i.shift(amount)).collect::<Vec<IntervalRange>>().into()
+    }
+
+    fn difference(&self, other: &Self) -> IntervalOperationResult<Self> {
+        let int = self.intersect(other);
+        if int.is_empty() {
+            return Single(self.ranges.clone().into());
+        }
+        let mut new_ranges: Vec<IntervalRange> = Vec::new();
+        for r in &self.ranges {
+            let mut r = r.clone();
+            for j in &int.ranges {
+                match r.difference(&j) {
+                    Single(_) => {}
+                    Multiple(x) => {
+                        new_ranges.push(x[0]);
+                        r = x[1].clone();
+                    }
+                }
+                if r.is_empty() {
+                    break;
+                }
+            }
+            if !r.is_empty() {
+                new_ranges.push(r);
+            }
+        }
+        Single(new_ranges.into())
+    }
 }
 
 impl IntervalBehavior for IntervalRange {
@@ -130,7 +209,7 @@ impl IntervalBehavior for IntervalRange {
             return Single(*self);
         }
 
-        if !self.intersect(&b).is_empty() {
+        if self.contiguous(b) || !self.intersect(&b).is_empty() {
             return Single(IntervalRange::new(min(self.start, b.start), max(self.end, b.end)));
         }
         if self.start >= b.start {
@@ -157,11 +236,23 @@ impl IntervalBehavior for IntervalRange {
             self.end = 0;
         }
     }
+
+    fn shift(&self, amount: i64) -> Self {
+        IntervalRange::new(self.start + amount, self.end + amount)
+    }
+
+    fn difference(&self, other: &Self) -> IntervalOperationResult<Self> {
+        let int = self.intersect(other);
+        if int.is_empty() {
+            return Single(IntervalRange::new(self.start, self.end));
+        }
+        Multiple(vec!(IntervalRange::new(self.start, int.start), IntervalRange::new(int.end, self.end)))
+    }
 }
 
 impl Display for IntervalRange {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "[{}, {}]", self.start, self.end)
+        write!(f, "[{}, {}[", self.start, self.end)
     }
 }
 
@@ -179,9 +270,64 @@ impl Display for Interval {
     }
 }
 
+impl PartialEq for Interval {
+    fn eq(&self, other: &Self) -> bool {
+        self.ranges.eq(&other.ranges)
+    }
+
+    fn ne(&self, other: &Self) -> bool {
+        !self.eq(other)
+    }
+}
+
 impl From<[i64; 2]> for IntervalRange {
     fn from(value: [i64; 2]) -> Self {
         IntervalRange::new(value[0], value[1])
+    }
+}
+
+impl IntervalRange {
+    pub fn contiguous(&self, other: &IntervalRange) -> bool {
+        self.start <= other.end && other.start <= self.end
+    }
+}
+
+impl Interval {
+    pub fn hull(&self) -> IntervalRange {
+        if self.ranges.is_empty() {
+            return IntervalRange::empty();
+        }
+        IntervalRange::new(self.ranges.first().unwrap().start, self.ranges.last().unwrap().end)
+    }
+
+    pub fn map_to(&self, ranges_shifts: &Vec<(IntervalRange, i64)>) -> Interval {
+        let mut new_ranges: Vec<IntervalRange> = Vec::new();
+        let mut to_remove: Vec<IntervalRange> = Vec::new();
+        for (r, s) in ranges_shifts {
+            let mut int = self.intersect(&vec!(*r).into());
+            if int.is_empty() {
+                continue;
+            }
+            new_ranges.append(&mut int.shift(*s).ranges.clone());
+            to_remove.append(&mut int.ranges);
+        }
+        match self.difference(&to_remove.into()) {
+            Single(x) => {
+                match x.union(&new_ranges.into()) {
+                    Single(x) => x,
+                    _ => { panic!("Shouldn't happen") }
+                }
+            }
+            _ => { panic!("Shouldn't happen") }
+        }
+    }
+}
+
+impl From<Vec<IntervalRange>> for Interval {
+    fn from(value: Vec<IntervalRange>) -> Self {
+        let mut i = Interval { ranges: value };
+        i.collapse();
+        i
     }
 }
 
@@ -190,7 +336,7 @@ mod tests {
     use super::*;
     use test_case::test_case;
 
-    #[test_case([0i64, 2i64].into(), [2i64, 4i64].into(), Multiple(vec ! ([0i64, 2i64].into(), [2i64, 4i64].into())))]
+    #[test_case([0i64, 2i64].into(), [2i64, 4i64].into(), Single([0i64, 4i64].into()))]
     #[test_case([0i64, 2i64].into(), [1i64, 4i64].into(), Single([0i64, 4i64].into()))]
     #[test_case([2i64, 2i64].into(), [1i64, 4i64].into(), Single([1i64, 4i64].into()))]
     #[test_case([0i64, 0i64].into(), [1i64, 4i64].into(), Single([1i64, 4i64].into()))]
@@ -198,10 +344,64 @@ mod tests {
     #[test_case([0i64, 0i64].into(), [3i64, - 1i64].into(), Single([0i64, 0i64].into()))]
     #[test_case([0i64, 0i64].into(), IntervalRange{start: 3i64, end: - 1i64}, Single([0i64, 0i64].into()))]
     fn utils_union_simple_works(a: IntervalRange, b: IntervalRange, expected: IntervalOperationResult<IntervalRange>) {
-        println!("{}", a);
-        println!("{}", b);
+        println!("A : {}", a);
+        println!("B : {}", b);
         let u = a.union(&b);
-        println!("{:?}", u);
+        println!("U : {}", u);
         assert_eq!(u, expected);
+    }
+
+    #[test_case([0i64, 2i64].into(), [2i64, 4i64].into(), IntervalRange::empty())]
+    #[test_case([0i64, 2i64].into(), [1i64, 4i64].into(), IntervalRange::new(1, 2))]
+    #[test_case([0i64, 2i64].into(), [0i64, 2i64].into(), IntervalRange::new(0, 2))]
+    #[test_case([0i64, 4i64].into(), [1i64, 3i64].into(), IntervalRange::new(1, 3))]
+    #[test_case([1i64, 3i64].into(), [0i64, 4i64].into(), IntervalRange::new(1, 3))]
+    #[test_case([1i64, 2i64].into(), IntervalRange{start: 3i64, end: - 1i64}, IntervalRange::empty())]
+    fn utils_intersection_simple_works(a: IntervalRange, b: IntervalRange, expected: IntervalRange) {
+        println!("A : {}", a);
+        println!("B : {}", b);
+        let i = a.intersect(&b);
+        println!("I : {}", i);
+        assert_eq!(i, expected);
+    }
+
+    #[test_case(Interval::new(0, 2), Interval::new(2, 4), Single(Interval::new(0, 4)))]
+    #[test_case(Interval::new(0, 2), Interval::new(3, 4), Single(Interval{ranges: vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 4))}))]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 4))}, Interval{ranges: vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 8))}, Single(Interval{ranges: vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 4), IntervalRange::new(5, 6), IntervalRange::new(7, 8))}))]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 4))}, Interval{ranges: vec ! (IntervalRange::new(4, 6), IntervalRange::new(7, 8))}, Single(Interval{ranges: vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 6), IntervalRange::new(7, 8))}))]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 8))}, Interval{ranges: vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 8))}, Single(Interval{ranges: vec ! (IntervalRange::new(0, 8))}))]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 0))}, Interval{ranges: vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 8))}, Single(Interval{ranges: vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 8))}))]
+    fn utils_union_works(a: Interval, b: Interval, expected: IntervalOperationResult<Interval>) {
+        println!("A : {}", a);
+        println!("B : {}", b);
+        let u = a.union(&b);
+        println!("U : {}", u);
+        assert_eq!(u, expected);
+    }
+
+    #[test_case(Interval::new(0, 2), Interval::new(2, 4), Interval::empty())]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 4))}, Interval{ranges: vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 8))}, Interval::empty())]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 4))}, Interval{ranges: vec ! (IntervalRange::new(4, 6), IntervalRange::new(7, 8))}, Interval::empty())]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 5))}, Interval{ranges: vec ! (IntervalRange::new(4, 6), IntervalRange::new(7, 8))}, Interval::new(4, 5))]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 8))}, Interval{ranges: vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 8))}, vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 8)).into())]
+    #[test_case(Interval{ranges: vec ! (IntervalRange::new(0, 8))}, Interval{ranges: vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 16))}, vec ! (IntervalRange::new(5, 6), IntervalRange::new(7, 8)).into())]
+    fn utils_intersection_works(a: Interval, b: Interval, expected: Interval) {
+        println!("A : {}", a);
+        println!("B : {}", b);
+        let i = a.intersect(&b);
+        println!("I : {}", i);
+        assert_eq!(i, expected);
+    }
+
+    #[test_case(Interval::new(0, 2), & vec ! ((IntervalRange::new(1, 2), 2)), vec ! (IntervalRange::new(0, 1), IntervalRange::new(3, 4)).into())]
+    #[test_case(Interval::new(0, 2), & vec ! ((IntervalRange::new(2, 3), 2)), vec ! (IntervalRange::new(0, 2)).into())]
+    #[test_case(Interval::new(0, 10), & vec ! ((IntervalRange::new(2, 3), 10), (IntervalRange::new(5, 7), 10)), vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 5), IntervalRange::new(7, 10), IntervalRange::new(12, 13), IntervalRange::new(15, 17)).into())]
+    #[test_case(Interval::new(0, 10), & vec ! ((IntervalRange::new(2, 3), 10), (IntervalRange::new(5, 7), 10), (IntervalRange::new(9, 10), 10)), vec ! (IntervalRange::new(0, 2), IntervalRange::new(3, 5), IntervalRange::new(7, 9), IntervalRange::new(12, 13), IntervalRange::new(15, 17), IntervalRange::new(19, 20)).into())]
+    fn utils_map_to(a: Interval, map: &Vec<(IntervalRange, i64)>, expected: Interval) {
+        println!("A : {}", a);
+        println!("B : {:?}", map);
+        let i = a.map_to(map);
+        println!("I : {}", i);
+        assert_eq!(i, expected);
     }
 }
