@@ -1,6 +1,6 @@
 use std::env;
 
-use aoc_common::{account_type_from_string, get_input, USAGE};
+use aoc_common::aoc_utils::{account_type_from_string, get_input, USAGE};
 
 const DAYS: [[fn(&str) -> String; 2]; 25] = [
     [day_01::solve_1, day_01::solve_2],

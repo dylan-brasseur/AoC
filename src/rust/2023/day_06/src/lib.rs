@@ -1,6 +1,7 @@
 use std::iter::zip;
+use aoc_common::math_utils::get_roots;
 
-use aoc_common::utils::{get_roots, StringManipulation};
+use aoc_common::string_utils::StringManipulation;
 
 #[allow(unused_variables)]
 pub fn solve_1(input: &str) -> String {

@@ -1,7 +1,6 @@
-use aoc_common::utils::{find_matching_in_sorted, StringManipulation};
+use aoc_common::string_utils::{find_matching_in_sorted, StringManipulation};
 
 
-#[allow(unused_variables)]
 pub fn solve_1(input: &str) -> String {
     let mut total = 0;
     for [w, h] in input.lines().map(|s| s.right_of(":").split_in::<2>("|").map::<fn(&str) -> Vec<i64>, Vec<i64>>(|s| {
@@ -19,7 +18,6 @@ pub fn solve_1(input: &str) -> String {
     format!("{}", total)
 }
 
-#[allow(unused_variables)]
 pub fn solve_2(input: &str) -> String {
     let mut total=0;
     let originals = input.lines().map(|s| s.right_of(":").split_in::<2>("|").map::<fn(&str) -> Vec<i64>, Vec<i64>>(|s| {
