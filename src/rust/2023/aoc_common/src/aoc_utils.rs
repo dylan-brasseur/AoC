@@ -1,6 +1,7 @@
-use std::fmt::Display;
 use std::{env, fs};
+use std::fmt::Display;
 use std::path::Path;
+
 use crate::aoc_utils::AccountType::{GitHub, Google, Reddit, Twitter};
 
 pub fn get_aoc_root() -> String {
@@ -54,5 +55,6 @@ pub fn get_input(account_type: &AccountType, year: &i16, day: &i8) -> std::io::R
 
 pub fn not_yet(input: &str) -> String {
     let _ = input;
-    todo!()
+    std::panic::set_hook(Box::new(|_| { println!("Not yet implemented") }));
+    panic!()
 }

@@ -1,9 +1,11 @@
+use aoc_common::aoc_utils::not_yet;
+
 pub fn solve_1(input: &str) -> String {
-    todo!("{}", input)
+    not_yet(input)
 }
 
 pub fn solve_2(input: &str) -> String {
-    todo!("{}", input)
+    not_yet(input)
 }
 
 #[cfg(test)]
