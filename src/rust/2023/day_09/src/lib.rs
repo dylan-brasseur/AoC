@@ -12,13 +12,15 @@ pub fn solve_2(input: &str) -> String {
 mod tests {
     use super::*;
 
-    const TEST_INPUT_1: &str = r"";
+    const TEST_INPUT_1: &str = r"0 3 6 9 12 15
+1 3 6 10 15 21
+10 13 16 21 30 45";
 
     const TEST_INPUT_2: &str = TEST_INPUT_1;
 
     #[test]
     fn solves_1() {
-        assert_eq!(solve_1(TEST_INPUT_1), "")
+        assert_eq!(solve_1(TEST_INPUT_1), "114")
     }
 
     #[test]
