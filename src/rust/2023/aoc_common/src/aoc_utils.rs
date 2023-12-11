@@ -55,6 +55,5 @@ pub fn get_input(account_type: &AccountType, year: &i16, day: &i8) -> std::io::R
 
 pub fn not_yet(input: &str) -> String {
     let _ = input;
-    std::panic::set_hook(Box::new(|_| { println!("Not yet implemented") }));
-    panic!()
+    panic!();
 }
