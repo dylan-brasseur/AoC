@@ -25,6 +25,24 @@ impl StringManipulation for &str {
     }
 }
 
+impl StringManipulation for String {
+    fn extract_numbers<'a>(&'a self) -> Box<dyn Iterator<Item=i64> + 'a> {
+        Box::new(self.split_whitespace().filter_map(|s| s.parse::<i64>().ok()))
+    }
+
+    fn split_in<const N: usize>(&self, pat: &str) -> [&str; N] {
+        self.split(pat).collect::<Vec<&str>>().try_into().unwrap_or_else(|v: Vec<&str>| panic!("Input cannot be split in exactly {} parts. Was split in {} parts", N, v.len()))
+    }
+
+    fn right_of(&self, pat: &str) -> &str {
+        self.split_in::<2>(pat)[1]
+    }
+
+    fn left_of(&self, pat: &str) -> &str {
+        self.split_in::<2>(pat)[0]
+    }
+}
+
 pub fn find_matching_in_sorted<T: Ord>(to_find: &Vec<T>, in_this_list: &Vec<T>) -> usize{
     let mut j=0;
     let mut total=0;
