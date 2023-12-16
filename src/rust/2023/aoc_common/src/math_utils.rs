@@ -1,6 +1,7 @@
 use std::cmp::{max, min};
 use std::fmt::{Display, Formatter};
 use crate::math_utils::IntervalOperationResult::{Multiple, Single};
+use gcd::Gcd;
 
 pub fn get_roots(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
     if a == 0.0 {
@@ -25,6 +26,15 @@ pub fn get_roots(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
     }
 }
 
+pub fn gcd(a: u64, b:u64) -> u64
+{
+    a.gcd(b)
+}
+
+pub fn lcm(a:u64, b:u64) -> u64
+{
+    (a*b)/gcd(a,b)
+}
 #[derive(Copy, Clone)]
 #[derive(PartialEq)]
 #[derive(Debug)]

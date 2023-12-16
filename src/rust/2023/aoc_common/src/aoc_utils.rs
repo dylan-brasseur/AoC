@@ -5,16 +5,13 @@ use std::path::Path;
 use crate::aoc_utils::AccountType::{GitHub, Google, Reddit, Twitter};
 
 pub fn get_aoc_root() -> String {
-    match env::var("AOC_ROOT") {
-        Ok(val) => val,
-        Err(_) => {
-            match env::consts::OS {
-                "windows" => r"D:\Dev\AoC\".to_string(),
-                "linux" => "/mnt/d/Dev/AoC/".to_string(),
-                &_ => "/mnt/d/Dev/AoC/".to_string()
-            }
+    env::var("AOC_ROOT").unwrap_or_else(|_| {
+        match env::consts::OS {
+            "windows" => r"D:\Dev\AoC\".to_string(),
+            "linux" => "/mnt/d/Dev/AoC/".to_string(),
+            &_ => "/mnt/d/Dev/AoC/".to_string()
         }
-    }
+    })
 }
 
 pub enum AccountType {

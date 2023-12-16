@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::ops::ControlFlow;
 
 use itertools::Itertools;
+use aoc_common::math_utils::lcm;
 
 pub fn solve_1(input: &str) -> String {
     let mut lines = input.lines();
@@ -41,17 +42,23 @@ pub fn solve_2(input: &str) -> String {
     }
     let ghosts = mapping.keys().filter(|k| k.ends_with('Z')).cloned().collect_vec();
 
-    let answer = match directions.iter().cycle().try_fold((ghosts, 0), |(k, p), d| {
-        let new_k = k.iter().map(|s| mapping[*s][*d]).collect_vec();
-        if new_k.iter().all(|s| s.ends_with('Z')) {
-            ControlFlow::Break((new_k, p + 1))
+    let answer = ghosts.iter().fold(0u64, |acc, ghost| match directions.iter().cycle().try_fold((ghost, 0), |(g, p), d|{
+        let next = &mapping[*g][*d];
+        if next.ends_with('Z'){
+            ControlFlow::Break((next, p + 1))
         } else {
-            ControlFlow::Continue((new_k, p + 1))
+            ControlFlow::Continue((next, p + 1))
         }
     }) {
         ControlFlow::Continue(_) => { panic!() }
-        ControlFlow::Break((_, x)) => { x }
-    };
+        ControlFlow::Break((_, x)) => {
+            if acc == 0{
+                x
+            } else {
+                lcm(x, acc)
+            }
+        }
+     });
     format!("{}", answer)
 }
 
