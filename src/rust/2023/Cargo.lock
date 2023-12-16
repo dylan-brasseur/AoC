@@ -133,6 +133,7 @@ name = "day_09"
 version = "0.1.0"
 dependencies = [
  "aoc_common",
+ "itertools",
  "regex",
 ]
 
