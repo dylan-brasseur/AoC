@@ -1,6 +1,3 @@
-use std::ops::Range;
-use aoc_common::aoc_utils::not_yet;
-
 fn parse(input:&str, offset_inc: u64) -> Vec<(i64, i64)>{
     let mut offset :u64 = 0;
     let mut galaxies: Vec<(i64, i64)> = Vec::new();
@@ -23,7 +20,7 @@ fn parse(input:&str, offset_inc: u64) -> Vec<(i64, i64)>{
         if galaxies.iter().all(|(_, y)| *y != i as i64){
             for g in &mut galaxies{
                 if g.1 > i as i64{
-                    *g = (g.0, g.1+1);
+                    *g = (g.0, g.1 + (offset_inc as i64));
                 }
             }
         }
@@ -32,32 +29,26 @@ fn parse(input:&str, offset_inc: u64) -> Vec<(i64, i64)>{
     galaxies
 }
 
-pub fn solve_1(input: &str) -> String {
-    let galaxies = parse(input, 1);
-    let mut total=0;
-    for i in 0..galaxies.len()-1{
-        for j in i+1..galaxies.len(){
+pub fn solve(input: &str, inc: u64) -> String {
+    let galaxies = parse(input, inc);
+    let mut total = 0;
+    for i in 0..galaxies.len() - 1 {
+        for j in i + 1..galaxies.len() {
             let a = galaxies[i];
             let b = galaxies[j];
-            total+= (b.0-a.0).abs() + (b.1-a.1).abs();
+            total += (b.0 - a.0).abs() + (b.1 - a.1).abs();
         }
     }
 
     format!("{}", total)
 }
 
-pub fn solve_2(input: &str) -> String {
-    let galaxies = parse(input, 999999);
-    let mut total=0;
-    for i in 0..galaxies.len()-1{
-        for j in i+1..galaxies.len(){
-            let a = galaxies[i];
-            let b = galaxies[j];
-            total+= (b.0-a.0).abs() + (b.1-a.1).abs();
-        }
-    }
+pub fn solve_1(input: &str) -> String {
+    solve(input, 1)
+}
 
-    format!("{}", total)
+pub fn solve_2(input: &str) -> String {
+    solve(input, 999999)
 }
 #[cfg(test)]
 mod tests {
@@ -82,7 +73,12 @@ mod tests {
     }
 
     #[test]
+    fn solves_2_1() {
+        assert_eq!(solve(TEST_INPUT_2, 9), "1030")
+    }
+
+    #[test]
     fn solves_2() {
-        assert_eq!(solve_2(TEST_INPUT_2), "")
+        assert_eq!(solve(TEST_INPUT_2, 99), "8410")
     }
 }

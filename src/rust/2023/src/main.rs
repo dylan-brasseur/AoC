@@ -56,7 +56,7 @@ mod tests {
     #[test_matrix(["google"], [2023], ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25"], [1, 2])]
     fn day(account_type: &str, year: i16, day: &str, task: i8) {
         let day = day.parse::<i8>().unwrap();
-        let input = get_input(&account_type_from_string(&account_type), &year, &day).expect(&*format!("Couldn't find input for {}/{} ({})", year, day, account_type));
+        let input = get_input(&account_type_from_string(account_type), &year, &day).unwrap_or_else(|_| panic!("Couldn't find input for {}/{} ({})", year, day, account_type));
         println!("{}", DAYS.get((day - 1) as usize).unwrap().get((task - 1) as usize).unwrap()(&input));
     }
 }
